@@ -1,438 +1,273 @@
-Admin:
-email: admin@tinviet.com
-password: Admin@123
+# TÓM TẮT DỰ ÁN (BẢN MỚI) – TinVietVP Shop (Client + Admin)
 
-Customer:
-email: customer@tinviet.com
-password: User@123
+Tài liệu này mô tả nhanh toàn bộ hệ thống (Backend + Frontend) của dự án TinVietVP Shop, kèm cấu trúc thư mục hiện tại để người nhận có thể nắm ngay dự án gồm những gì, chạy ra sao và các module chính nằm ở đâu.
 
-1) Tổng quan dự án
+--------------------------------------------------------------------
+1) Thông tin chung
+--------------------------------------------------------------------
+Tên dự án: TinVietVP – Website bán/cho thuê Máy in & Máy photocopy (có phân hệ Admin)
 
-Tên dự án: TinVietVP – Website bán máy in / máy photocopy
 Mục tiêu:
-
-Clone giao diện & luồng cơ bản của tinvietvp.com
-
-Nâng cấp thành hệ thống có đăng ký/đăng nhập + theo dõi đơn hàng
-
-Tách backend REST API phục vụ frontend React 
-
-TomTatDuAn
+- Clone UI/luồng cơ bản theo tinvietvp.com và nâng cấp thành hệ thống có:
+  + Hiển thị danh mục/sản phẩm theo danh mục, trang chi tiết sản phẩm
+  + Trang Giới thiệu / Liên hệ
+  + Đăng nhập/đăng ký dạng modal (Client)
+  + Admin Dashboard + quản lý Sản phẩm + Danh mục + Khách hàng
 
 Công nghệ:
-
-Backend: Node.js + Express, REST API, mô hình MVC 
-
-TomTatDuAn
-
-Database: MySQL 8 (XAMPP) 
-
-TomTatDuAn
-
-Auth: JWT (Access Token + Refresh Token) 
-
-TomTatDuAn
-
-Frontend: React (Vite) + TailwindCSS (tách Customer/Admin)
-
-2) Chức năng hệ thống
-2.1 Backend – đã triển khai (trọng tâm)
-
-Authentication
-
-Đăng ký (email + phone), đăng nhập
-
-Refresh token, logout/revoke token
-
-Lấy user hiện tại /me
-
-Phân quyền role (user/admin) 
-
-TomTatDuAn
-
-Catalog & CMS
-
-Category đa cấp (tree)
-
-Brand
-
-Product: list, filter theo category/brand, search, sort, pagination, detail (images/attributes/related), suggest/autocomplete 
-
-TomTatDuAn
-
-Cart & Order
-
-Giỏ hàng guest + giỏ hàng theo user (1 user – 1 cart active)
-
-Add/view cart items
-
-Checkout tạo order
-
-Lịch sử đơn hàng, chi tiết đơn hàng 
-
-TomTatDuAn
-
-Home page support
-
-Slider banner
-
-Settings (hotline, address, email,…) 
-
-TomTatDuAn
-
-Admin nền tảng
-
-Middleware phân quyền admin
-
-Chuẩn bị CRUD cho product/category/slider/settings 
-
-TomTatDuAn
-
-2.2 Các hạng mục dự kiến/mở rộng
-
-Upload ảnh (product/slider), Admin UI, thanh toán online (optional), SEO metadata 
-
-TomTatDuAn
-
-3) Database MySQL – nhóm bảng và ý nghĩa
-
-Các nhóm bảng chính đang được định hướng như sau (danh sách bảng theo tài liệu hiện tại): 
-
-TomTatDuAn
-
-3.1 Core (người dùng & xác thực)
-
-users: thông tin tài khoản, role
-
-user_addresses: địa chỉ giao hàng
-
-user_tokens: quản lý refresh token / revoke
-
-3.2 Catalog (danh mục – sản phẩm)
-
-categories: danh mục nhiều cấp
-
-brands: thương hiệu
-
-products: sản phẩm (slug, giá, mô tả, trạng thái)
-
-product_images: ảnh sản phẩm
-
-attributes, product_attribute_values: thuộc tính – giá trị (phục vụ mô tả kỹ thuật)
-
-inventories: tồn kho
-
-3.3 CMS (nội dung & điều hướng)
-
-posts: bài viết (giới thiệu/chính sách…)
-
-sliders: banner/slider trang chủ
-
-menus, menu_items: menu động
-
-settings: cấu hình hotline/địa chỉ/email…
-
-3.4 Commerce (mua hàng)
-
-carts, cart_items: giỏ hàng
-
-orders, order_items: đơn hàng
-
-payments: thanh toán (dự phòng)
-
-shipments: vận chuyển (dự phòng)
-
-3.5 Other
-
-product_reviews: đánh giá
-
-contact_messages: liên hệ
-
-4) Backend – cấu trúc code & cách vận hành (MVC)
-4.1 Cấu trúc thư mục backend hiện tại
-
-(Theo bản tóm tắt backend bạn cung cấp) 
-
-TomTatDuAn
-
-src/
- ├─ app.js
- ├─ server.js
- ├─ config/
- │   ├─ db.js
- │   └─ env.js
- ├─ middlewares/
- │   ├─ auth.middleware.js
- │   └─ error.middleware.js
- ├─ routes/
- │   └─ index.js
- └─ modules/
-     ├─ auth/
-     │   ├─ auth.router.js
-     │   ├─ auth.controller.js
-     │   ├─ auth.service.js
-     │   ├─ auth.model.js
-     │   └─ token.model.js
-     ├─ product/
-     ├─ category/
-     ├─ brand/
-     ├─ cart/
-     ├─ order/
-     ├─ slider/
-     └─ settings/
-
-4.2 Giải thích mô hình MVC đang dùng
-
-router: khai báo endpoint + gắn middleware (auth/admin) + trỏ sang controller
-
-controller: nhận request/validate cơ bản → gọi service → trả response chuẩn JSON
-
-service: xử lý nghiệp vụ (cart logic, checkout, auth flow…)
-
-model: thao tác DB (query MySQL), tách khỏi service để dễ thay đổi DB layer
-
-middlewares:
-
-auth.middleware.js: verify access token, gắn req.user
-
-error.middleware.js: chuẩn hoá lỗi trả về frontend
-
-5) Backend – các API chính (để Frontend gọi)
-
-Danh sách endpoint cốt lõi theo tài liệu dự án: 
-
-TomTatDuAn
-
-5.1 Auth
-
-POST /api/auth/register
-
-POST /api/auth/login
-
-POST /api/auth/refresh
-
-POST /api/auth/logout
-
-GET /api/auth/me
-
-5.2 Catalog
-
-GET /api/categories/tree
-
-GET /api/brands
-
-GET /api/products
-
-GET /api/products/:slug
-
-GET /api/products/suggest
-
-5.3 Cart
-
-GET /api/cart/me/cart
-
-POST /api/cart/me/cart/items
-
-5.4 Order
-
-POST /api/orders/checkout
-
-GET /api/orders/me
-
-GET /api/orders/me/:orderId
-
-5.5 Home
-
-GET /api/sliders
-
-GET /api/settings
-
-6) Frontend – cấu trúc FE (Customer/Admin) & cách “ăn” API
-
-Phần này là mô tả theo hướng bạn đang triển khai: React Vite + Tailwind, tách 2 phân hệ Customer và Admin, dùng chung core (api client, auth store, utils).
-
-6.1) Cấu trúc Frontend hiện tại (đúng theo repo của bạn)
+- Backend: Node.js + Express, REST API, kiến trúc MVC
+- Database: MySQL (XAMPP/MySQL 8)
+- Auth: JWT (access/refresh) + phân quyền role (customer/admin)
+- Frontend: React (Vite) + TailwindCSS
+- Admin UI: React + react-icons, Dashboard dùng recharts
+
+Tài khoản demo:
+- Admin: admin@tinviet.com / Admin@123
+- Customer: customer@tinviet.com / User@123
+
+--------------------------------------------------------------------
+2) Chức năng hiện có (đã triển khai)
+--------------------------------------------------------------------
+2.1 Client (Customer-facing)
+- Trang chủ (Home):
+  + Sidebar danh mục (CategorySidebar) lấy cây danh mục từ API
+  + Banner/slider, promo banner (ảnh tĩnh / API)
+  + Các khối danh mục nổi bật hiển thị sản phẩm theo danh mục
+- Trang danh mục sản phẩm:
+  + /danh-muc/:idOrSlug -> hiển thị danh sách sản phẩm theo danh mục
+- Trang chi tiết sản phẩm:
+  + /san-pham/:slug -> hiển thị thông tin sản phẩm, gallery hình, mô tả/thuộc tính (nếu có)
+- Trang Giới thiệu:
+  + Nội dung text + ảnh (ảnh tĩnh theo tên file bạn lưu trong public)
+- Trang Liên hệ:
+  + Ảnh thông tin liên hệ (ảnh tĩnh)
+- Đăng nhập/Đăng ký:
+  + Dạng Modal (popup) mở từ TopNav
+  + Lưu trạng thái đăng nhập vào auth.store (token + user)
+  + Nếu role=admin có thể điều hướng vào /admin
+
+2.2 Admin
+- Admin Layout:
+  + Sidebar menu (Dashboard/Sản phẩm/Danh mục/Khách hàng)
+  + Header hiển thị user đang đăng nhập, nút đăng xuất
+- Dashboard:
+  + Card thống kê tổng quan (products/categories/users)
+  + Biểu đồ tổng quan (demo) bằng recharts (Bar/Line/Pie)
+- Quản lý sản phẩm:
+  + Danh sách sản phẩm + lọc/tìm + phân trang
+  + Tạo mới / sửa sản phẩm
+  + Gọi API admin cho CRUD sản phẩm
+- Quản lý danh mục:
+  + Danh sách danh mục + tạo/sửa/xóa (soft delete/inactive)
+  + Gọi API /api/admin/categories
+- Quản lý khách hàng:
+  + Danh sách user (tạm thời dựa trên API /api/admin/users nếu backend đã mount)
+  + Lọc theo role/status (nếu backend hỗ trợ)
+
+--------------------------------------------------------------------
+3) API Backend chính (phục vụ FE)
+--------------------------------------------------------------------
+Auth:
+- POST /api/auth/register
+- POST /api/auth/login
+- POST /api/auth/refresh
+- POST /api/auth/logout
+- GET  /api/auth/me
+
+Catalog:
+- GET /api/categories/tree
+- GET /api/products
+- GET /api/products/:slug
+- GET /api/brands
+- GET /api/sliders
+- GET /api/settings
+
+Admin (yêu cầu adminGuard):
+- /api/admin/products    (CRUD sản phẩm)
+- /api/admin/categories  (CRUD danh mục)
+- /api/admin/users       (list user – nếu module users đã mount)
+
+--------------------------------------------------------------------
+4) Database (tóm tắt nhóm bảng)
+--------------------------------------------------------------------
+Nhóm Core/Auth:
+- users (role, full_name, email/phone, password_hash, status...)
+- user_tokens (refresh token / revoke)
+- user_addresses
+
+Nhóm Catalog:
+- categories (đa cấp)
+- brands
+- products
+- product_images
+- attributes + product_attribute_values
+- inventories (tồn kho)
+
+Nhóm CMS/Home:
+- sliders
+- settings
+- posts/menus (dự kiến mở rộng)
+
+Nhóm Commerce (định hướng):
+- carts, cart_items
+- orders, order_items
+- payments, shipments (dự phòng)
+
+--------------------------------------------------------------------
+5) CẤU TRÚC THƯ MỤC HIỆN TẠI (QUAN TRỌNG)
+--------------------------------------------------------------------
+
+5.1 Backend (Node.js/Express, MVC)
+backend/
+└─ src/
+   ├─ server.js
+   ├─ app.js
+   ├─ routes/
+   │  └─ index.js                      # Mount các module API: auth/categories/products/cart/orders/settings/sliders/brands
+   ├─ middlewares/
+   │  ├─ error.middleware.js
+   │  └─ (các middleware khác nếu có)
+   └─ modules/
+      ├─ auth/
+      │  ├─ auth.router.js
+      │  ├─ auth.controller.js
+      │  ├─ auth.service.js
+      │  ├─ auth.model.js
+      │  └─ auth.middleware.js         # authGuard + adminGuard
+      ├─ product/
+      │  ├─ product.router.js
+      │  ├─ product.controller.js
+      │  ├─ product.service.js
+      │  ├─ product.model.js
+      │  └─ admin.product.router.js    # CRUD admin cho sản phẩm
+      ├─ category/
+      │  ├─ category.router.js         # public routes (tree,...)
+      │  ├─ category.controller.js
+      │  ├─ category.service.js
+      │  ├─ category.model.js
+      │  ├─ admin.category.router.js   # CRUD admin cho danh mục
+      │  └─ admin.category.service.js  # (nếu tách riêng service admin)
+      ├─ brand/
+      ├─ cart/
+      ├─ order/
+      ├─ slider/
+      └─ settings/
+
+Ghi chú:
+- Tất cả route được mount từ src/routes/index.js.
+- Admin routes nằm dưới /api/admin/* và được bảo vệ bởi adminGuard.
+
+5.2 Frontend (React/Vite + Tailwind, Client + Admin)
 frontend/
 ├─ public/
-│  ├─ images/
-│  │  ├─ brands/
-│  │  └─ sliders/
-│  │  ├─ footer-banner.png
-│  │  ├─ header-left.png
-│  │  ├─ header-right.png
-│  │  └─ promo-home.png
-│  └─ vite.svg
-│
-├─ src/
-│  ├─ assets/                       # (đang để trống/ít dùng) assets import theo module
-│  │
-│  ├─ layouts/                      # layout dùng chung (hiện tại bạn đã tạo thư mục này)
-│  │   # Lưu ý: hiện tại cấu trúc đang có layouts nhưng chưa thấy file trong ảnh
-│  │
-│  ├─ pages/
-│  │  └─ client/
-│  │     └─ Home/
-│  │        ├─ HomePage.jsx         # Trang chủ: ghép các section & gọi API
-│  │        └─ components/          # component con riêng cho Home
-│  │           ├─ CategorySidebar.jsx        # Sidebar danh mục (trái)
-│  │           ├─ FeaturedCategoryBlock.jsx  # Block danh mục + 10 sản phẩm
-│  │           ├─ HeroSlider.jsx             # Slider banner (phải)
-│  │           └─ PromoBanner.jsx            # Banner quảng cáo lớn
-│  │
-│  ├─ routes/
-│  │  ├─ index.jsx                  # Router root: gắn ClientRoutes
-│  │  └─ ClientRoutes.jsx           # Router phân hệ client (Home, ...)
-│  │
-│  ├─ services/
-│  │  ├─ api.js                     # axios instance + interceptor token/baseURL
-│  │  ├─ category.service.js        # gọi API category (tree/list)
-│  │  ├─ product.service.js         # gọi API product (list/detail/filter)
-│  │  ├─ settings.service.js        # gọi API settings (hotline/address/email…)
-│  │  └─ slider.service.js          # gọi API sliders (banner)
-│  │
-│  ├─ stores/
-│  │  ├─ auth.store.js              # lưu user/token trạng thái đăng nhập
-│  │  └─ cart.store.js              # trạng thái giỏ hàng (count/items)
-│  │
-│  ├─ utils/
-│  │  └─ format.js                  # format tiền VND, helper hiển thị
-│  │
-│  ├─ App.jsx                       # App wrapper, render routes
-│  ├─ App.css                       # CSS bổ trợ (nếu có)
-│  ├─ index.css                     # Tailwind entry + style base
-│  └─ main.jsx                      # Entry: mount React + Router + QueryProvider
-│
-├─ .env                             # VITE_API_URL (hoặc config api)
-├─ index.html
-├─ package.json / lock
-├─ eslint.config.js
-└─ README.md
-
-2) Dòng chảy hoạt động (đọc là hiểu hệ thống FE)
-2.1 Boot app
-
-main.jsx khởi tạo React, bọc Router/React Query (nếu bạn dùng).
-
-App.jsx render routing từ src/routes/index.jsx.
-
-2.2 Routing
-
-routes/index.jsx là router cấp cao → điều hướng vào ClientRoutes.jsx.
-
-routes/ClientRoutes.jsx map các trang client (hiện bạn có Home trước).
-
-2.3 Trang chủ (Home)
-
-pages/client/Home/HomePage.jsx là trang chính:
-
-Fetch:
-
-category.service.getTree() → sidebar danh mục
-
-slider.service.getAll() → slider
-
-product.service.list({ category, limit: 10 }) → từng block danh mục
-
-settings.service.getAll() (nếu header/footer dùng settings)
-
-Render:
-
-CategorySidebar + HeroSlider
-
-PromoBanner
-
-3 block danh mục (FeaturedCategoryBlock) × 10 sản phẩm
-
-2.4 Gọi API (services)
-
-services/api.js là axios instance chung
-
-đọc VITE_API_URL
-
-gắn Authorization header nếu có token (auth.store)
-
-Mỗi *.service.js chỉ làm 1 nhiệm vụ:
-
-category: cây danh mục
-
-product: list/detail/filter
-
-slider: banner
-
-settings: hotline/address/email
-
-2.5 State global
-
-stores/auth.store.js
-
-giữ trạng thái đăng nhập (user, accessToken, refreshToken tùy bạn)
-
-stores/cart.store.js
-
-giữ count/items giỏ hàng để header hiển thị nhanh
-
-sau này đồng bộ với backend cart API
-
-2.6 Asset & hình ảnh
-
-public/images/* chứa ảnh tĩnh dùng trực tiếp bằng URL /images/...
-
-slider: /images/sliders/*
-
-partner brand: /images/brands/*
-
-header/footer/promo: header-left.png, promo-home.png, footer-banner.png...
-
-6.2 Luồng FE gọi API (mapping nhanh)
-
-Header/Topbar
-
-GET /api/settings → hotline, address, email
-
-Auth state → show “Đăng nhập/Đăng ký” hoặc “Tài khoản/Đơn hàng”
-
-Sidebar danh mục
-
-GET /api/categories/tree → render danh mục đa cấp
-
-Banner slider
-
-GET /api/sliders → render slider 4 ảnh
-
-Sản phẩm nổi bật theo danh mục (Home)
-
-GET /api/products?categorySlug=...&limit=10 cho từng block danh mục
-
-hoặc gọi 3 lần theo 3 slug danh mục bạn chọn
-
-Giỏ hàng
-
-guest: lưu local (tuỳ bạn), hoặc vẫn dùng server với session key
-
-user: GET /api/cart/me/cart + POST /api/cart/me/cart/items
-
-Checkout / Theo dõi đơn
-
-POST /api/orders/checkout
-
-GET /api/orders/me + GET /api/orders/me/:orderId
-
-7) Trạng thái dự án hiện tại & định hướng tiếp theo
-
-Theo tài liệu hiện có:
-
-Backend đã ổn định và sẵn sàng cho frontend 
-
-TomTatDuAn
-
-Các bước triển khai tiếp theo được đề xuất:
-
-Dựng FE React (Vite + Tailwind)
-
-Clone layout trang chủ
-
-Gọi API thật & render dữ liệu
-
-Hoàn thiện UX (search, cart, checkout) 
-
-TomTatDuAn
+│  └─ images/
+│     ├─ brands/
+│     ├─ sliders/
+│     ├─ (ảnh tĩnh header/promo/footer)
+│     ├─ about-banner.png              # (bạn sẽ thêm theo tên này hoặc đổi tên tùy ý)
+│     └─ contact-info.png              # (bạn sẽ thêm theo tên này hoặc đổi tên tùy ý)
+└─ src/
+   ├─ routes/
+   │  ├─ index.jsx                     # Router root
+   │  ├─ ClientRoutes.jsx              # Routes client: home/detail/about/contact/category
+   │  └─ AdminRoutes.jsx               # Routes admin: dashboard/products/categories/users
+   │
+   ├─ layouts/
+   │  ├─ client/
+   │  │  ├─ ClientLayout.jsx
+   │  │  ├─ TopNav.jsx
+   │  │  ├─ HeaderBar.jsx
+   │  │  ├─ MainBar.jsx
+   │  │  ├─ PartnersBar.jsx
+   │  │  └─ Footer.jsx
+   │  └─ admin/
+   │     └─ AdminLayout.jsx
+   │
+   ├─ pages/
+   │  ├─ client/
+   │  │  ├─ Home/
+   │  │  │  ├─ HomePage.jsx
+   │  │  │  └─ components/
+   │  │  │     ├─ CategorySidebar.jsx
+   │  │  │     └─ FeaturedCategoryBlock.jsx
+   │  │  ├─ ProductDetail/
+   │  │  │  └─ ProductDetailPage.jsx
+   │  │  ├─ Category/
+   │  │  │  └─ CategoryProductsPage.jsx
+   │  │  ├─ About/
+   │  │  │  └─ AboutPage.jsx
+   │  │  ├─ Contact/
+   │  │  │  └─ ContactPage.jsx
+   │  │  └─ Auth/
+   │  │     └─ AuthModal.jsx           # Modal đăng nhập/đăng ký
+   │  │
+   │  └─ admin/
+   │     ├─ Dashboard/
+   │     │  └─ DashboardPage.jsx       # Charts + cards tổng quan
+   │     ├─ Products/
+   │     │  ├─ ProductListPage.jsx
+   │     │  └─ ProductFormPage.jsx
+   │     ├─ Categories/
+   │     │  └─ AdminCategoryPage.jsx
+   │     └─ Users/
+   │        └─ AdminUserPage.jsx
+   │
+   ├─ services/
+   │  ├─ api.js                        # axios instance + interceptor
+   │  ├─ product.service.js
+   │  ├─ category.service.js
+   │  ├─ auth.service.js               # (nếu có)
+   │  ├─ admin.product.service.js      # CRUD admin sản phẩm (nếu tách riêng)
+   │  ├─ admin.category.service.js     # CRUD admin danh mục
+   │  ├─ admin.user.service.js         # list user admin (nếu có)
+   │  └─ admin.dashboard.service.js    # tổng hợp counts cho dashboard
+   │
+   ├─ stores/
+   │  └─ auth.store.js                 # trạng thái đăng nhập + token + user
+   │
+   ├─ utils/
+   │  └─ (format helpers, v.v.)
+   ├─ App.jsx
+   ├─ main.jsx
+   └─ index.css
+
+--------------------------------------------------------------------
+6) Luồng chạy hệ thống (Onboarding nhanh)
+--------------------------------------------------------------------
+A) Database
+- Import schema + data (tinviet_shop.sql)
+- Đảm bảo bảng users có tài khoản demo (admin/customer)
+
+B) Backend
+- Cấu hình .env (DB_HOST/DB_USER/DB_PASS/DB_NAME, JWT secrets)
+- Chạy:
+  npm install
+  npm run dev
+- API chạy tại: http://localhost:5000 (ví dụ)
+
+C) Frontend
+- Cấu hình VITE_API_URL trỏ về backend (ví dụ http://localhost:5000/api)
+- Chạy:
+  npm install
+  npm run dev
+- Truy cập:
+  + Client: http://localhost:5173/
+  + Admin: http://localhost:5173/admin (chỉ vào được khi login role=admin)
+
+--------------------------------------------------------------------
+7) Ghi chú triển khai & định hướng mở rộng
+--------------------------------------------------------------------
+- Upload ảnh sản phẩm/slider: hiện dùng URL /images/... (static). Có thể mở rộng upload file + lưu DB.
+- Orders/Cart: backend đã có định hướng; FE có thể bổ sung trang giỏ hàng/checkout/hóa đơn.
+- SEO: slug, meta title/description, sitemap.
+- Bảo mật: refresh token rotation, blacklist, rate limit.
+
+--------------------------------------------------------------------
+8) Changelog so với bản tóm tắt cũ
+--------------------------------------------------------------------
+- Bổ sung phân hệ Admin hoàn chỉnh (Dashboard, Products, Categories, Users) và routing AdminRoutes.
+- Bổ sung các trang client: About/Contact/CategoryProducts/ProductDetail.
+- Bổ sung Auth modal + auth.store dùng chung cho client/admin.
+- Sửa API admin categories để FE có thể load danh mục trong trang admin.
+
+(End)

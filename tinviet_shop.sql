@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 14, 2025 at 11:24 AM
+-- Generation Time: Dec 18, 2025 at 04:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -369,7 +369,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `product_type`, `category_id`, `brand_id`, `name`, `slug`, `sku`, `short_desc`, `description`, `featured_image_url`, `price`, `compare_at_price`, `cost_price`, `is_featured`, `status`, `view_count`, `created_at`, `updated_at`) VALUES
-(1, 'sell', 1, 2, 'Máy in HP LaserJet Pro M404dn', 'may-in-hp-laserjet-pro-m404dn', 'HP-M404DN', 'In laser trắng đen bền bỉ, phù hợp văn phòng.', 'Máy in HP LaserJet Pro M404dn. Tốc độ cao, in sắc nét, tiết kiệm chi phí.', '/images/products/printer-hp-m404dn-1.png', 5490000.00, 6290000.00, NULL, 1, 'published', 0, '2025-12-14 17:08:43', '2025-12-14 17:08:43'),
+(1, 'sell', 1, 2, 'Máy in HP LaserJet Pro M404dn', 'may-in-hp-laserjet-pro-m404dn', 'HP-M404DN', 'In laser trắng đen bền bỉ, phù hợp văn phòng.', 'Máy in HP LaserJet Pro M404dn. Tốc độ cao, in sắc nét, tiết kiệm chi phí.', '/images/products/printer-hp-m404dn-1.png', 5480000.00, 6290000.00, NULL, 1, 'published', 0, '2025-12-14 17:08:43', '2025-12-16 14:11:17'),
 (2, 'sell', 1, 1, 'Máy in Canon LBP 2900', 'may-in-canon-lbp-2900', 'CANON-LBP2900', 'Máy in quốc dân, nhỏ gọn, dễ sử dụng.', 'Canon LBP 2900: in laser trắng đen, phù hợp cá nhân/văn phòng nhỏ.', '/images/products/printer-canon-lbp2900-1.png', 3290000.00, 3790000.00, NULL, 1, 'published', 0, '2025-12-14 17:08:43', '2025-12-14 17:08:43'),
 (3, 'sell', 1, 3, 'Máy in Brother HL-L2366DW', 'may-in-brother-hl-l2366dw', 'BRO-HLL2366DW', 'WiFi + In 2 mặt tự động, ổn định.', 'Brother HL-L2366DW hỗ trợ WiFi, in hai mặt tự động, phù hợp văn phòng.', '/images/products/printer-brother-hll2366dw-1.png', 4190000.00, 4890000.00, NULL, 0, 'published', 0, '2025-12-14 17:08:43', '2025-12-14 17:08:43'),
 (4, 'sell', 1, 4, 'Máy in Epson L3150', 'may-in-epson-l3150', 'EPS-L3150', 'In phun màu EcoTank, tiết kiệm mực.', 'Epson L3150: in màu, scan, copy; bình mực lớn, chi phí thấp.', '/images/products/printer-epson-l3150-1.png', 3990000.00, 4590000.00, NULL, 0, 'published', 0, '2025-12-14 17:08:43', '2025-12-14 17:08:43'),
@@ -620,7 +620,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role`, `full_name`, `email`, `phone`, `password_hash`, `status`, `email_verified_at`, `last_login_at`, `created_at`, `updated_at`) VALUES
-(1, 'customer', 'Nguyen Van A', 'a@gmail.com', '0909123456', '$2b$10$003qUaiVORkcRtfGGhE/cuPXeZx1.g4o.bhug/UUKiIRGUeMx0oq6', 'active', NULL, NULL, '2025-12-13 23:47:30', '2025-12-13 23:47:30');
+(1, 'customer', 'Nguyen Van A', 'a@gmail.com', '0909123456', '$2b$10$003qUaiVORkcRtfGGhE/cuPXeZx1.g4o.bhug/UUKiIRGUeMx0oq6', 'active', NULL, NULL, '2025-12-13 23:47:30', '2025-12-13 23:47:30'),
+(2, 'admin', 'Admin TinViet', 'admin@tinviet.com', '0909000001', '$2b$10$TpgImHt9MpHSxxqK330gAuffSdkk9MoZF99AvC8IiXi08N1oapAnK', 'active', NULL, NULL, '2025-12-16 12:49:16', '2025-12-16 12:49:16'),
+(3, 'customer', 'Customer TinViet', 'customer@tinviet.com', '0909000002', '$2b$10$dy7gOXPujOq0c3U2QUDSgOfgHxQNoyawyBuLroNfUe5b.sNiBFf26', 'active', NULL, NULL, '2025-12-16 12:49:16', '2025-12-16 12:49:16'),
+(4, 'customer', 'Tâm Dịt', 'tamdit@gmail.com', '0987654321', '$2b$10$.QqXVvECVfOljLRlrHQ37epuaSzjFO7WGcGNeq5pv6I6VZBeiPlaG', 'active', NULL, NULL, '2025-12-16 12:51:35', '2025-12-16 12:51:35');
 
 -- --------------------------------------------------------
 
@@ -659,6 +662,23 @@ CREATE TABLE `user_tokens` (
   `revoked_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_tokens`
+--
+
+INSERT INTO `user_tokens` (`id`, `user_id`, `token_hash`, `token_type`, `expires_at`, `revoked_at`, `created_at`) VALUES
+(1, 3, '1aa01ef6982d0b89f21d52a5cc85a19969e014b61fb2694111401afe5d4be374', 'refresh', '2025-12-23 12:50:11', NULL, '2025-12-16 12:50:11'),
+(2, 2, '47962999f01e4c374e8535fd9ba9e2809b97d0e8a1d6994a1e21a6fd3590cd34', 'refresh', '2025-12-23 12:50:41', NULL, '2025-12-16 12:50:41'),
+(3, 4, '1995aaec6c190759ebd856644965ed55815ad3079a1e5396d64ecf6322ada906', 'refresh', '2025-12-23 12:51:35', NULL, '2025-12-16 12:51:35'),
+(4, 2, '87084b9002be6d76d82e7512e3bac64cf76eaade8222435bf3a10eace01fcafe', 'refresh', '2025-12-23 13:20:35', NULL, '2025-12-16 13:20:35'),
+(5, 2, '1b0b009c5f4dbc3774588c7e7e1ad302ba498ab31e9afa377672f5dc586b529d', 'refresh', '2025-12-23 13:50:03', NULL, '2025-12-16 13:50:03'),
+(6, 2, 'd302fe8996740ae9499b35d89452b3fc5115a81ee885163dce1ad4746a69de3d', 'refresh', '2025-12-23 14:10:13', NULL, '2025-12-16 14:10:13'),
+(7, 2, '17363f51fe86cc6077ef6c2f2e392d021473daee541cc219b548cc5cfa08d528', 'refresh', '2025-12-23 14:30:59', NULL, '2025-12-16 14:30:59'),
+(8, 2, 'ce55d8a694fecd757381c4ed1d043b3504991e7b63ccdce773a0a1542d8a0f1d', 'refresh', '2025-12-23 14:35:29', NULL, '2025-12-16 14:35:29'),
+(9, 2, '80473ae297097fa5d834f29506675194d3c506fd1b9a1a300b732f764b2b0f45', 'refresh', '2025-12-23 14:38:14', NULL, '2025-12-16 14:38:14'),
+(10, 2, '22bf75ae86a05d1a225121684a4de709a973eae5cf3ae8c7ceb0445d1bc02d9c', 'refresh', '2025-12-23 14:48:00', NULL, '2025-12-16 14:48:00'),
+(11, 2, '1c103c29fd5a7288d3f05a992d5f1214a1c5edf6c4dd28ad0d664089718e4192', 'refresh', '2025-12-23 14:59:11', NULL, '2025-12-16 14:59:11');
 
 --
 -- Indexes for dumped tables
@@ -889,7 +909,7 @@ ALTER TABLE `cart_items`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `contact_messages`
@@ -991,7 +1011,7 @@ ALTER TABLE `sliders`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`
@@ -1003,7 +1023,7 @@ ALTER TABLE `user_addresses`
 -- AUTO_INCREMENT for table `user_tokens`
 --
 ALTER TABLE `user_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
